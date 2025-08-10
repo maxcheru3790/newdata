@@ -1,0 +1,2359 @@
+# Windows file path: use either forward slashes or double backslashes
+file_path <- "C:/Users/USER/Downloads/CLEANEDCRYPTODATA.csv"
+# or
+# file_path <- "C:\\Users\\USER\\Downloads\\CLEANEDCRYPTODATA.csv"
+
+# Import CSV into a dataframe
+crypto_data <- read.csv(file_path, stringsAsFactors = FALSE)
+
+# View first few rows to check
+head(crypto_data)
+
+
+
+
+# Load ggplot2
+library(ggplot2)
+library(dplyr)
+
+# Make sure Year is numeric
+crypto_data$Year <- as.numeric(as.character(crypto_data$Year))
+
+# Aggregate counts by Year and Classification
+trend_data <- crypto_data %>%
+  group_by(Year, Classification) %>%
+  summarise(Count = n(), .groups = "drop")
+
+# Plot line graph
+ggplot(trend_data, aes(x = Year, y = Count, color = Classification)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Blockchain and Crypto Policy Trends",
+    x = "Year",
+    y = "Number of Documents",
+    color = "Classification"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = unique(trend_data$Year)) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+
+# Make sure Year is numeric
+crypto_data$Year <- as.numeric(as.character(crypto_data$Year))
+
+# Aggregate total count of documents per year
+yearly_counts <- crypto_data %>%
+  group_by(Year) %>%
+  summarise(Count = n(), .groups = "drop")
+
+# Plot line graph
+ggplot(yearly_counts, aes(x = Year, y = Count)) +
+  geom_line(size = 1, color = "steelblue") +
+  geom_point(size = 2, color = "steelblue") +
+  labs(
+    title = "Blockchain and Crypto Policy Trends",
+    x = "Year",
+    y = "Number of Documents"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = unique(yearly_counts$Year)) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+library(ggplot2)
+library(dplyr)
+
+crypto_data$Year <- as.numeric(as.character(crypto_data$Year))
+
+yearly_counts <- crypto_data %>%
+  group_by(Year) %>%
+  summarise(Count = n(), .groups = "drop")
+
+ggplot(yearly_counts, aes(x = Year)) +
+  # Policy Count line and points in deep navy blue
+  geom_line(aes(y = Count, color = "Policy Count"), size = 1.2) +
+  geom_point(aes(y = Count, color = "Policy Count"), size = 3) +
+  # Trend line in vibrant yellow dashed
+  geom_smooth(aes(y = Count, color = "Trend Line"), method = "loess", se = FALSE, linetype = "dashed", size = 1) +
+  
+  scale_color_manual(
+    name = "Legend",
+    values = c("Policy Count" = "#1F3A93", "Trend Line" = "#F1C40F")
+  ) +
+  
+  scale_x_continuous(
+    breaks = seq(min(yearly_counts$Year), max(yearly_counts$Year), by = 1),
+    labels = scales::label_number(accuracy = 1)
+  ) +
+  
+  labs(
+    title = "Blockchain and Crypto Policy Trends",
+    subtitle = "Tracking the rise of policy documents over time in Africa",
+    x = "Year",
+    y = "Publications Count",
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 20, hjust = 0.5, color = "black"),
+    plot.subtitle = element_text(size = 14, hjust = 0.5, margin = margin(b = 15), color = "black"),
+    axis.title.x = element_text(face = "bold", size = 14, color = "black"),
+    axis.title.y = element_text(face = "bold", size = 14, color = "black"),
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12, color = "black"),
+    axis.text.y = element_text(size = 12, color = "black"),
+    legend.position = c(0.95, 0.05),
+    legend.justification = c("right", "bottom"),
+    legend.background = element_rect(fill = alpha("white", 0.8), color = NA),
+    legend.title = element_text(face = "bold", size = 12, color = "black"),
+    legend.text = element_text(size = 11, color = "black")
+  )
+
+library(dplyr)
+
+# Make sure Year is numeric
+crypto_data$Year <- as.numeric(as.character(crypto_data$Year))
+
+# Summarize count per year
+yearly_counts <- crypto_data %>%
+  group_by(Year) %>%
+  summarise(Count = n(), .groups = "drop")
+
+# Display the table
+print(yearly_counts)
+
+
+
+
+# Install ggchicklet if not installed
+if (!require(ggchicklet)) install.packages("ggchicklet")
+
+library(ggplot2)
+library(dplyr)
+library(ggchicklet)
+
+classification_counts <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  count(Classification) %>%
+  arrange(desc(n))
+
+ggplot(classification_counts, aes(x = reorder(Classification, n), y = n)) +
+  geom_chicklet(fill = "#3778BF", width = 0.6) +  # rounded bars
+  geom_text(aes(label = n), hjust = -0.2, size = 5, color = "black") +  # frequency labels
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +  # space for labels
+  labs(
+    title = "Top Blockchain & Crypto Policy Themes Across Africa",
+    x = NULL,
+    y = NULL,
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18, hjust = 0.5),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 12),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+
+# Install ggforce if you don't have it
+if (!requireNamespace("ggforce", quietly = TRUE)) install.packages("ggforce")
+
+library(ggplot2)
+library(dplyr)
+library(ggforce)
+
+classification_counts <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  count(Classification) %>%
+  arrange(desc(n))
+
+ggplot(classification_counts, aes(x = reorder(Classification, n), y = n)) +
+  geom_bar(stat = "identity", width = 0.6, fill = "#3778BF", radius = unit(5, "pt")) +  # rounded corners
+  geom_text(aes(label = n), hjust = -0.2, size = 5, color = "black") +
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Top Blockchain & Crypto Policy Themes Across Africa",
+    x = NULL,
+    y = NULL,
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18, hjust = 0.5),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 12),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+ggplot(classification_counts, aes(x = reorder(Classification, n), y = n)) +
+  geom_col(fill = "#3778BF", width = 0.5, alpha = 0.85) +  # narrower and slightly transparent
+  geom_text(aes(label = n), hjust = -0.2, size = 5, color = "black") +
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Top Blockchain & Crypto Policy Themes Across Africa",
+    x = NULL,
+    y = NULL,
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18, hjust = 0.5),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 12),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+library(ggplot2)
+library(dplyr)
+library(ggchicklet)
+
+classification_counts <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  count(Classification) %>%
+  arrange(desc(n))
+
+ggplot(classification_counts, aes(x = reorder(Classification, n), y = n)) +
+  geom_chicklet(fill = "#3778BF", width = 0.6, radius = unit(5, "pt")) +  # rounded bars
+  geom_text(aes(label = n), hjust = -0.2, size = 5, color = "black") +   # frequency labels
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +            # space for labels
+  labs(
+    title = "Top Blockchain & Crypto Policy Themes Across Africa",
+    x = NULL,
+    y = NULL,
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18, hjust = 0.5),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 12, color = "black"),  # Make y labels visible
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+
+# Prepare yearly counts by Classification
+yearly_theme_counts <- crypto_data %>%
+  filter(Classification != "Other") %>%  # optional: remove 'Other'
+  group_by(Year, Classification) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Year = as.integer(Year)) %>%
+  arrange(Year)
+
+# Plot trends for each theme
+ggplot(yearly_theme_counts, aes(x = Year, y = Count, color = Classification)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = seq(2015, 2025, 1)) +
+  labs(
+    title = "Trend of Blockchain & Crypto Policy Themes in Africa (2015-2025)",
+    x = "Year",
+    y = "Number of Publications",
+    color = "Policy Theme",
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+    axis.text.x = element_text(angle = 0, vjust = 0.5),
+    legend.position = "right"
+  )
+
+library(dplyr)
+
+# Find top 3 themes by total count
+top3_themes <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  count(Classification, sort = TRUE) %>%
+  slice_head(n = 3) %>%
+  pull(Classification)
+
+# Get yearly counts only for top 3 themes
+yearly_top3_counts <- crypto_data %>%
+  filter(Classification %in% top3_themes) %>%
+  group_by(Year, Classification) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Year = as.integer(Year)) %>%
+  arrange(Year, Classification)
+
+print(yearly_top3_counts)
+
+
+library(ggplot2)
+library(dplyr)
+
+# Identify top 3 themes overall
+top3_themes <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  count(Classification, sort = TRUE) %>%
+  slice_head(n = 3) %>%
+  pull(Classification)
+
+# Prepare yearly counts for top 3 themes
+yearly_top3_counts <- crypto_data %>%
+  filter(Classification %in% top3_themes) %>%
+  group_by(Year, Classification) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Year = as.integer(Year)) %>%
+  arrange(Year, Classification)
+
+# Plot
+ggplot(yearly_top3_counts, aes(x = Year, y = Count, color = Classification)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = seq(2015, 2025, 1)) +
+  labs(
+    title = "Trends of Top 3 Blockchain & Crypto Policy Themes in Africa (2015–2025)",
+    x = "Year",
+    y = "Number of Publications",
+    color = "Policy Theme",
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+    axis.text.x = element_text(angle = 0, vjust = 0.5),
+    legend.position = "right"
+  )
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+
+# Identify top 3 themes overall
+top3_themes <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  count(Classification, sort = TRUE) %>%
+  slice_head(n = 3) %>%
+  pull(Classification)
+
+# Prepare yearly counts for top 3 themes
+yearly_top3_counts <- crypto_data %>%
+  filter(Classification %in% top3_themes) %>%
+  group_by(Year, Classification) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Year = as.integer(Year)) %>%
+  arrange(Year, Classification)
+
+# Get last year per classification for label placement
+last_points <- yearly_top3_counts %>%
+  group_by(Classification) %>%
+  filter(Year == max(Year)) %>%
+  ungroup()
+
+# Plot with direct labels
+ggplot(yearly_top3_counts, aes(x = Year, y = Count, color = Classification)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  geom_text_repel(
+    data = last_points,
+    aes(label = Classification),
+    nudge_x = 0.7,
+    direction = "y",
+    hjust = 0,
+    segment.color = NA,
+    size = 5,
+    show.legend = FALSE
+  ) +
+  scale_x_continuous(breaks = seq(2015, 2025, 1), limits = c(2015, 2026)) +
+  labs(
+    title = "Regulation, Law, and Compliance is the Most Popular Blockchain Theme Across Africa",
+    x = "Year",
+    y = "Number of Publications",
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+    axis.text.x = element_text(angle = 0, vjust = 0.5),
+    legend.position = "none"  # hide default legend
+  )
+#Model
+library(forecast)
+library(tseries)
+
+# Suppose 'yearly_counts' is a dataframe with Year and Count columns
+
+# Create time series object (start at 2015, frequency = 1 for yearly)
+ts_data <- ts(yearly_counts$Count, start = 2015, frequency = 1)
+
+# Check stationarity and difference if needed
+adf.test(ts_data)  # Augmented Dickey-Fuller test
+
+# Fit ARIMA model automatically
+fit <- auto.arima(ts_data)
+
+# Forecast to 2030 (5 years ahead)
+forecast_horizon <- 2030 - max(yearly_counts$Year)
+fc <- forecast(fit, h = forecast_horizon)
+
+# Plot forecast
+plot(fc, main = "Forecast of Blockchain/Crypto Policy Publications to 2030")
+
+# Optional: view forecasted values
+print(fc)
+
+
+
+
+
+library(dplyr)
+
+yearly_theme_counts <- crypto_data %>%
+  filter(Classification != "Other") %>%
+  group_by(Year, Classification) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  mutate(Year = as.integer(Year)) %>%
+  arrange(Classification, Year)
+
+
+library(forecast)
+library(purrr)
+
+forecast_horizon <- 2030 - max(yearly_theme_counts$Year)
+
+forecast_theme <- function(df_theme) {
+  ts_theme <- ts(df_theme$Count, start = min(df_theme$Year), frequency = 1)
+  
+  fit <- auto.arima(ts_theme)
+  fc <- forecast(fit, h = forecast_horizon)
+  
+  # Return a data frame with forecast years, predicted values, and theme label
+  data.frame(
+    Year = (max(df_theme$Year) + 1):2030,
+    Forecast = as.numeric(fc$mean),
+    Lo80 = as.numeric(fc$lower[,1]),
+    Hi80 = as.numeric(fc$upper[,1]),
+    Lo95 = as.numeric(fc$lower[,2]),
+    Hi95 = as.numeric(fc$upper[,2]),
+    Classification = unique(df_theme$Classification)
+  )
+}
+
+
+# Split data by theme
+theme_list <- split(yearly_theme_counts, yearly_theme_counts$Classification)
+
+# Run forecast for each theme
+forecast_list <- map_df(theme_list, forecast_theme)
+
+# Optional: View the combined forecast table
+print(forecast_list)
+
+
+
+
+forecast_theme <- function(df_theme) {
+  ts_theme <- ts(df_theme$Count, start = min(df_theme$Year), frequency = 1)
+  forecast_horizon <- 2030 - max(df_theme$Year)
+  
+  # If series too short or no forecast horizon, return empty
+  if(length(ts_theme) < 3 || forecast_horizon <= 0) {
+    return(data.frame(
+      Year = integer(0),
+      Forecast = numeric(0),
+      Lo80 = numeric(0),
+      Hi80 = numeric(0),
+      Lo95 = numeric(0),
+      Hi95 = numeric(0),
+      Classification = character(0)
+    ))
+  }
+  
+  fit <- tryCatch(auto.arima(ts_theme), error = function(e) NULL)
+  if (is.null(fit)) {
+    # If model fails, return empty
+    return(data.frame(
+      Year = integer(0),
+      Forecast = numeric(0),
+      Lo80 = numeric(0),
+      Hi80 = numeric(0),
+      Lo95 = numeric(0),
+      Hi95 = numeric(0),
+      Classification = character(0)
+    ))
+  }
+  
+  fc <- forecast(fit, h = forecast_horizon)
+  
+  # Ensure lengths match forecast_horizon
+  n <- forecast_horizon
+  data.frame(
+    Year = (max(df_theme$Year) + 1):(max(df_theme$Year) + n),
+    Forecast = as.numeric(fc$mean[1:n]),
+    Lo80 = as.numeric(fc$lower[1:n, 1]),
+    Hi80 = as.numeric(fc$upper[1:n, 1]),
+    Lo95 = as.numeric(fc$lower[1:n, 2]),
+    Hi95 = as.numeric(fc$upper[1:n, 2]),
+    Classification = unique(df_theme$Classification)
+  )
+}
+
+
+library(purrr)
+forecast_list <- map_df(theme_list, forecast_theme)
+print(forecast_list)
+
+
+
+
+
+
+install.packages("prophet")
+library(prophet)
+library(dplyr)
+library(ggplot2)
+# Example for one theme, e.g. "Regulation, Governance and Legal Framework"
+theme_name <- "Regulation, Governance and Legal Framework"
+
+theme_data <- yearly_theme_counts %>%
+  filter(Classification == theme_name) %>%
+  transmute(
+    ds = as.Date(paste0(Year, "-01-01")),
+    y = Count
+  )
+# Initialize and fit model
+m <- prophet(theme_data)
+
+# Create future dataframe for forecasting up to 2030
+future <- make_future_dataframe(m, periods = 2030 - max(yearly_theme_counts$Year), freq = "year")
+
+# Predict
+forecast <- predict(m, future)
+
+# Plot forecast
+prophet_plot_components(m, forecast)
+plot(m, forecast) + ggtitle(paste("Prophet Forecast for", theme_name))
+
+
+
+
+
+library(forecast)
+
+# Create ts object for ETS
+ts_data <- ts(theme_data$y, start = as.numeric(format(min(theme_data$ds), "%Y")), frequency = 1)
+
+# Fit ETS model
+ets_fit <- ets(ts_data)
+
+# Forecast ETS
+ets_forecast <- forecast(ets_fit, h = 2030 - max(yearly_theme_counts$Year))
+
+# Plot ETS forecast
+autoplot(ets_forecast) + 
+  ggtitle(paste("ETS Forecast for", theme_name)) + 
+  xlab("Year") + ylab("Publications")
+
+
+
+
+compare_models <- function(df_theme) {
+  theme <- unique(df_theme$Classification)
+  
+  # Prepare data for Prophet
+  df_prophet <- df_theme %>%
+    transmute(ds = as.Date(paste0(Year, "-01-01")), y = Count)
+  
+  # Fit Prophet
+  m_prophet <- prophet(df_prophet, yearly.seasonality = FALSE, daily.seasonality = FALSE, weekly.seasonality = FALSE)
+  
+  # Forecast horizon
+  horizon <- 2030 - max(df_theme$Year)
+  
+  future <- make_future_dataframe(m_prophet, periods = horizon, freq = "year")
+  forecast_prophet <- predict(m_prophet, future)
+  
+  # Extract predicted values for training period for accuracy
+  prophet_pred <- forecast_prophet$yhat[1:nrow(df_prophet)]
+  
+  # Create ts for ETS
+  ts_data <- ts(df_theme$Count, start = min(df_theme$Year), frequency = 1)
+  
+  # Fit ETS
+  fit_ets <- ets(ts_data)
+  
+  # Forecast ETS
+  forecast_ets <- forecast(fit_ets, h = horizon)
+  
+  # ETS fitted values for accuracy (in-sample forecast)
+  ets_fitted <- fitted(fit_ets)
+  
+  # Calculate RMSE on training period
+  rmse_prophet <- sqrt(mean((df_theme$Count - prophet_pred)^2))
+  rmse_ets <- sqrt(mean((df_theme$Count - ets_fitted)^2))
+  
+  # Prepare forecast data frame
+  prophet_forecast_df <- data.frame(
+    Year = (max(df_theme$Year) + 1):2030,
+    Forecast = forecast_prophet$yhat[(nrow(df_prophet) + 1):nrow(forecast_prophet)],
+    Model = "Prophet",
+    Classification = theme
+  )
+  
+  ets_forecast_df <- data.frame(
+    Year = (max(df_theme$Year) + 1):2030,
+    Forecast = as.numeric(forecast_ets$mean),
+    Model = "ETS",
+    Classification = theme
+  )
+  
+  forecasts <- bind_rows(prophet_forecast_df, ets_forecast_df)
+  
+  # Return list: forecasts + rmse scores
+  list(
+    forecasts = forecasts,
+    rmse = data.frame(
+      Classification = theme,
+      RMSE_Prophet = rmse_prophet,
+      RMSE_ETS = rmse_ets
+    )
+  )
+}
+
+
+# Split data by theme
+theme_list <- split(yearly_theme_counts, yearly_theme_counts$Classification)
+
+# Run model comparison
+results <- map(theme_list, compare_models)
+
+# Extract forecasts and RMSE tables
+all_forecasts <- bind_rows(map(results, "forecasts"))
+rmse_table <- bind_rows(map(results, "rmse"))
+
+print(rmse_table)
+
+
+
+ggplot(all_forecasts, aes(x = Year, y = Forecast, color = Model, linetype = Model)) +
+  geom_line(size = 1) +
+  facet_wrap(~ Classification, scales = "free_y") +
+  labs(title = "Forecast Comparison: Prophet vs ETS by Policy Theme",
+       y = "Publications",
+       x = "Year",
+       color = "Model",
+       linetype = "Model") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom")
+#Predict top 3
+library(prophet)
+library(dplyr)
+library(ggplot2)
+
+# Assuming classification_counts is available
+top3_themes <- classification_counts %>%
+  filter(Classification != "Other") %>%
+  top_n(3, n) %>%
+  pull(Classification)
+
+# Filter yearly counts for top 3 themes
+top3_data <- yearly_theme_counts %>%
+  filter(Classification %in% top3_themes)
+
+
+
+
+forecast_horizon <- 2030 - max(top3_data$Year)
+
+forecast_list <- list()
+
+for(theme in top3_themes) {
+  df_theme <- top3_data %>% filter(Classification == theme)
+  
+  # Prepare data for Prophet
+  df_prophet <- df_theme %>%
+    transmute(ds = as.Date(paste0(Year, "-01-01")), y = Count)
+  
+  # Fit model
+  m <- prophet(df_prophet, yearly.seasonality = FALSE)
+  
+  # Future dataframe
+  future <- make_future_dataframe(m, periods = forecast_horizon, freq = "year")
+  
+  # Predict
+  forecast <- predict(m, future)
+  
+  # Extract needed columns and add theme label
+  forecast_df <- forecast %>%
+    select(ds, yhat) %>%
+    mutate(
+      Classification = theme,
+      Year = as.numeric(format(ds, "%Y")),
+      Type = ifelse(Year <= max(df_theme$Year), "Historical", "Forecast")
+    ) %>%
+    filter(Year >= min(df_theme$Year))
+  
+  forecast_list[[theme]] <- forecast_df
+}
+
+combined_forecast <- bind_rows(forecast_list)
+
+
+
+ggplot(combined_forecast, aes(x = Year, y = yhat, color = Classification, linetype = Type)) +
+  geom_line(size = 1) +
+  labs(
+    title = "Prophet Forecast for Top 3 Blockchain & Crypto Policy Themes in Africa",
+    x = "Year",
+    y = "Number of Publications",
+    color = "Policy Theme",
+    linetype = "Data Type",
+    caption = "Data source: Curated from reputable articles, academic journals, and official documents."
+  ) +
+  scale_x_continuous(breaks = seq(min(combined_forecast$Year), 2030, 1)) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 0, vjust = 0.5)
+  )
+library(dplyr)
+library(tseries)
+library(prophet)
+library(purrr)
+
+
+
+
+test_theme_assumptions <- function(df_theme) {
+  theme <- unique(df_theme$Classification)
+  
+  # ADF test for stationarity
+  adf <- tryCatch(adf.test(df_theme$Count), error = function(e) NULL)
+  adf_p <- ifelse(is.null(adf), NA, adf$p.value)
+  stationary <- ifelse(!is.na(adf_p) & adf_p < 0.05, "Yes", "No")
+  
+  # Prepare for Prophet
+  df_prophet <- df_theme %>%
+    transmute(ds = as.Date(paste0(Year, "-01-01")), y = Count)
+  
+  # Fit Prophet with yearly seasonality
+  m <- prophet(df_prophet, yearly.seasonality = TRUE, daily.seasonality = FALSE, weekly.seasonality = FALSE, verbose=FALSE)
+  future <- make_future_dataframe(m, periods = 0, freq = "year")
+  forecast <- predict(m, future)
+  
+  # Check for seasonality from components plot data
+  seasonal <- ifelse(any(abs(forecast$yearly) > 0.01), "Yes", "No")
+  
+  # Calculate residuals on training data
+  df_prophet$yhat <- forecast$yhat
+  residuals <- df_prophet$y - df_prophet$yhat
+  
+  # Shapiro-Wilk test for normality of residuals
+  shapiro <- tryCatch(shapiro.test(residuals), error = function(e) NULL)
+  shapiro_p <- ifelse(is.null(shapiro), NA, shapiro$p.value)
+  residuals_normal <- ifelse(!is.na(shapiro_p) & shapiro_p > 0.05, "Yes", "No")
+  
+  # Return summary table row
+  tibble(
+    Classification = theme,
+    ADF_p_value = round(adf_p, 4),
+    Stationary = stationary,
+    Seasonality = seasonal,
+    Shapiro_p_value = round(shapiro_p, 4),
+    Residuals_Normal = residuals_normal
+  )
+}
+
+
+
+top3_themes <- classification_counts %>%
+  filter(Classification != "Other") %>%
+  top_n(3, n) %>%
+  pull(Classification)
+
+top3_data <- yearly_theme_counts %>%
+  filter(Classification %in% top3_themes)
+
+theme_list <- split(top3_data, top3_data$Classification)
+
+results <- map_dfr(theme_list, test_theme_assumptions)
+
+print(results)
+
+
+
+
+
+
+library(dplyr)
+library(tseries)
+library(prophet)
+library(purrr)
+library(lubridate)
+
+test_prophet_assumptions <- function(df_theme) {
+  theme <- unique(df_theme$Classification)
+  
+  # Prepare data for prophet
+  df_prophet <- df_theme %>%
+    transmute(ds = ymd(paste0(Year, "-01-01")), y = Count)
+  
+  # ADF test for stationarity on original counts
+  adf <- tryCatch(adf.test(df_prophet$y), error = function(e) NULL)
+  adf_p <- ifelse(is.null(adf), NA, adf$p.value)
+  stationary <- ifelse(!is.na(adf_p) & adf_p < 0.05, "Yes", "No")
+  
+  # Fit prophet model
+  m <- prophet(df_prophet, yearly.seasonality = TRUE, weekly.seasonality = FALSE, daily.seasonality = FALSE, verbose = FALSE)
+  
+  # Predict on training data
+  forecast <- predict(m, df_prophet)
+  
+  # Seasonality check: magnitude of yearly seasonality component
+  # Prophet includes a 'yearly' component in forecast object, extract max abs
+  seasonal_strength <- max(abs(forecast$yearly))
+  seasonality <- ifelse(seasonal_strength > 0.01, "Yes", "No")
+  
+  # Residuals: observed - predicted
+  residuals <- df_prophet$y - forecast$yhat
+  
+  # Shapiro-Wilk test for residual normality
+  shapiro <- tryCatch(shapiro.test(residuals), error = function(e) NULL)
+  shapiro_p <- ifelse(is.null(shapiro), NA, shapiro$p.value)
+  residuals_normal <- ifelse(!is.na(shapiro_p) & shapiro_p > 0.05, "Yes", "No")
+  
+  # Ljung-Box test for residual autocorrelation (lags = 5)
+  lb <- tryCatch(Box.test(residuals, lag = 5, type = "Ljung-Box"), error = function(e) NULL)
+  lb_p <- ifelse(is.null(lb), NA, lb$p.value)
+  residuals_independent <- ifelse(!is.na(lb_p) & lb_p > 0.05, "Yes", "No")
+  
+  tibble(
+    Classification = theme,
+    ADF_p_value = round(adf_p, 4),
+    Stationary = stationary,
+    Seasonality = seasonality,
+    Shapiro_p_value = round(shapiro_p, 4),
+    Residuals_Normal = residuals_normal,
+    LjungBox_p_value = round(lb_p, 4),
+    Residuals_Independent = residuals_independent
+  )
+}
+
+# Example: run on top 3 themes
+top3_themes <- classification_counts %>%
+  filter(Classification != "Other") %>%
+  top_n(3, n) %>%
+  pull(Classification)
+
+top3_data <- yearly_theme_counts %>%
+  filter(Classification %in% top3_themes)
+
+theme_list <- split(top3_data, top3_data$Classification)
+
+results <- map_dfr(theme_list, test_prophet_assumptions)
+
+print(results)
+
+library(forecast)
+m <- prophet(df_prophet)  # your regulation data in df_prophet
+forecast <- predict(m, df_prophet)
+residuals <- df_prophet$y - forecast$yhat
+
+acf(residuals, main="ACF of Residuals - Regulation")
+pacf(residuals, main="PACF of Residuals - Regulation")
+
+
+
+
+library(forecast)
+library(dplyr)
+
+# Fit prophet model
+m <- prophet(df_prophet)  # your Regulation, Governance data
+forecast <- predict(m, df_prophet)
+
+# Calculate residuals
+residuals <- df_prophet$y - forecast$yhat
+
+# Get ACF and PACF values (default lag max = 10)
+acf_res <- acf(residuals, plot = FALSE)
+pacf_res <- pacf(residuals, plot = FALSE)
+
+# Convert to data frames for easy viewing
+acf_df <- data.frame(
+  Lag = acf_res$lag[-1],  # remove lag 0 (always 1)
+  ACF = acf_res$acf[-1]
+)
+
+pacf_df <- data.frame(
+  Lag = pacf_res$lag,
+  PACF = pacf_res$acf
+)
+
+# Combine ACF and PACF side by side
+acf_pacf_table <- acf_df %>%
+  left_join(pacf_df, by = "Lag") %>%
+  arrange(Lag)
+
+print(acf_pacf_table)
+
+library(prophet)
+library(forecast)
+library(dplyr)
+
+# Your data in df_prophet with columns ds (date) and y (count)
+m <- prophet(df_prophet)
+forecast <- predict(m, df_prophet)
+
+# Residuals = actual - predicted
+residuals <- df_prophet$y - forecast$yhat
+
+
+
+# Fit ARIMA - use order = c(2,0,0) based on PACF lag 2 insight
+arima_fit <- Arima(residuals, order = c(2,0,0))
+
+# Check residual diagnostics
+checkresiduals(arima_fit)
+
+
+
+
+# Create future dataframe for Prophet (5 years ahead)
+future <- make_future_dataframe(m, periods = 5, freq = "year")
+
+# Prophet forecast
+prophet_forecast <- predict(m, future)
+
+# Forecast residuals with ARIMA for next 5 years
+arima_forecast <- forecast(arima_fit, h = 5)
+
+# Combine forecasts: add residual correction to Prophet trend
+combined_forecast <- prophet_forecast$yhat
+combined_forecast[(nrow(df_prophet) + 1):length(combined_forecast)] <- 
+  combined_forecast[(nrow(df_prophet) + 1):length(combined_forecast)] + arima_forecast$mean
+
+
+library(ggplot2)
+
+forecast_df <- data.frame(
+  ds = future$ds,
+  prophet = prophet_forecast$yhat,
+  arima_residuals = c(rep(0, nrow(df_prophet)), arima_forecast$mean),
+  combined = combined_forecast
+)
+
+ggplot(forecast_df, aes(x = ds)) +
+  geom_line(aes(y = prophet), color = "blue", size = 1, linetype = "dashed") +
+  geom_line(aes(y = combined), color = "red", size = 1) +
+  labs(
+    title = "Hybrid Prophet + ARIMA Residual Forecast",
+    subtitle = "Regulation, Governance and Legal Framework theme",
+    x = "Year", y = "Publications"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+
+# Assuming you already have:
+# m = fitted Prophet model
+# arima_fit = ARIMA(2,0,0) fit on residuals
+# df_prophet = original data frame with ds and y
+
+# Future dates
+future <- make_future_dataframe(m, periods = 5, freq = "year")
+n_orig <- nrow(df_prophet)
+
+# Prophet forecast
+prophet_forecast <- predict(m, future)
+
+# ARIMA forecast on residuals (only for future periods)
+arima_forecast <- forecast(arima_fit, h = 5)
+
+# Hybrid forecast = Prophet + ARIMA residuals correction
+combined_forecast <- prophet_forecast$yhat
+combined_forecast[(n_orig + 1):length(combined_forecast)] <- 
+  combined_forecast[(n_orig + 1):length(combined_forecast)] + arima_forecast$mean
+
+# Create data frame for plotting
+plot_df <- data.frame(
+  ds = future$ds,
+  prophet = prophet_forecast$yhat,
+  arima_resid = c(rep(NA, n_orig), arima_forecast$mean),
+  hybrid = combined_forecast
+)
+
+# Labels for the ends of lines
+label_df <- plot_df %>% 
+  filter(ds == max(ds)) %>% 
+  mutate(
+    label_prophet = "Prophet",
+    label_arima = "ARIMA Residuals",
+    label_hybrid = "Hybrid Forecast"
+  )
+
+# Plot
+ggplot(plot_df, aes(x = ds)) +
+  geom_line(aes(y = prophet), color = "blue", linetype = "dashed", size = 1) +
+  geom_line(aes(y = arima_resid), color = "green", linetype = "dotted", size = 1) +
+  geom_line(aes(y = hybrid), color = "red", size = 1.2) +
+  
+  # Add labels at end of each line
+  geom_text(data = label_df, aes(x = ds + 100, y = prophet, label = label_prophet), color = "blue", hjust = 0) +
+  geom_text(data = label_df, aes(x = ds + 100, y = arima_resid, label = label_arima), color = "green", hjust = 0) +
+  geom_text(data = label_df, aes(x = ds + 100, y = hybrid, label = label_hybrid), color = "red", hjust = 0) +
+  
+  labs(
+    title = "Forecast Comparison for Regulation, Governance and Legal Framework",
+    x = "Year",
+    y = "Publications"
+  ) +
+  theme_minimal() +
+  coord_cartesian(clip = "off") +  # allow text outside plot
+  theme(plot.margin = margin(5, 50, 5, 5))  # add right margin for labels
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(forecast)
+library(prophet)
+
+# Assume you have dfs:
+# df_regulation, df_blockchain, df_crypto - each with ds, y columns
+
+# ---- Fit models ----
+# Regulation: Prophet + ARIMA residuals hybrid
+m_reg <- prophet(df_regulation)
+fc_reg <- predict(m_reg, make_future_dataframe(m_reg, periods=5, freq="year"))
+resid_reg <- df_regulation$y - fc_reg$yhat[1:nrow(df_regulation)]
+arima_reg <- Arima(resid_reg, order=c(2,0,0))
+fc_arima_reg <- forecast(arima_reg, h=5)
+
+hybrid_reg <- fc_reg$yhat
+hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] <- 
+  hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] + fc_arima_reg$mean
+
+# Blockchain theme Prophet only
+m_block <- prophet(df_blockchain)
+fc_block <- predict(m_block, make_future_dataframe(m_block, periods=5, freq="year"))
+
+# Crypto theme Prophet only
+m_crypto <- prophet(df_crypto)
+fc_crypto <- predict(m_crypto, make_future_dataframe(m_crypto, periods=5, freq="year"))
+
+# ---- Prepare combined data for plotting ----
+plot_df <- bind_rows(
+  data.frame(
+    ds = fc_reg$ds,
+    forecast = hybrid_reg,
+    theme = "Regulation (Hybrid)"
+  ),
+  data.frame(
+    ds = fc_block$ds,
+    forecast = fc_block$yhat,
+    theme = "Blockchain Technology (Prophet)"
+  ),
+  data.frame(
+    ds = fc_crypto$ds,
+    forecast = fc_crypto$yhat,
+    theme = "Cryptocurrency & Digital Assets (Prophet)"
+  )
+)
+
+# ---- Prepare labels ----
+label_df <- plot_df %>%
+  group_by(theme) %>%
+  filter(ds == max(ds)) %>%
+  ungroup()
+
+# ---- Plot ----
+ggplot(plot_df, aes(x = ds, y = forecast, color = theme)) +
+  geom_line(size = 1.2) +
+  geom_text(data = label_df, aes(label = theme), hjust = 0, nudge_x = 200) +
+  scale_color_manual(values = c(
+    "Regulation (Hybrid)" = "red",
+    "Blockchain Technology (Prophet)" = "blue",
+    "Cryptocurrency & Digital Assets (Prophet)" = "darkgreen"
+  )) +
+  labs(
+    title = "Forecasts of Top Blockchain and Crypto Policy Themes in Africa",
+    subtitle = "Regulation shown as hybrid forecast; others as Prophet forecasts",
+    x = "Year",
+    y = "Publications"
+  ) +
+  theme_minimal() +
+  coord_cartesian(clip = "off") +
+  theme(
+    plot.margin = margin(5, 80, 5, 5),
+    legend.position = "none",
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(color = "black", face = "bold")
+  )
+
+
+
+plot_df <- bind_rows(
+  data.frame(
+    ds = fc_reg$ds,
+    forecast = as.numeric(hybrid_reg),  # ensure numeric vector
+    theme = "Regulation (Hybrid)"
+  ),
+  data.frame(
+    ds = fc_block$ds,
+    forecast = as.numeric(fc_block$yhat),
+    theme = "Blockchain Technology (Prophet)"
+  ),
+  data.frame(
+    ds = fc_crypto$ds,
+    forecast = as.numeric(fc_crypto$yhat),
+    theme = "Cryptocurrency & Digital Assets (Prophet)"
+  )
+)
+
+
+library(prophet)
+library(forecast)
+library(dplyr)
+
+# Assuming you have your regulation data in df_regulation with columns 'ds' (date) and 'y' (counts)
+m_reg <- prophet(df_regulation)
+
+# Create future dataframe with 5 years forecast
+future_reg <- make_future_dataframe(m_reg, periods = 5, freq = 'year')
+
+# Predict with Prophet
+fc_reg <- predict(m_reg, future_reg)
+
+# Calculate residuals on training data
+residuals_reg <- df_regulation$y - fc_reg$yhat[1:nrow(df_regulation)]
+
+# Fit ARIMA on residuals
+arima_reg <- Arima(residuals_reg, order = c(2,0,0))
+
+# Forecast residuals for 5 years
+fc_arima_reg <- forecast(arima_reg, h = 5)
+
+# Create hybrid forecast by adding ARIMA residual forecast to Prophet forecast
+hybrid_reg <- fc_reg$yhat
+hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] <- hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] + fc_arima_reg$mean
+
+library(dplyr)
+
+df_regulation <- yearly_theme_counts %>%
+  filter(Classification == "Regulation, Governance and Legal Framework") %>%
+  select(Year, Count) %>%
+  rename(ds = Year, y = Count) %>%
+  mutate(ds = as.Date(paste0(ds, "-01-01")))  # convert to Date format (Jan 1st of each year)
+
+
+
+library(prophet)
+library(forecast)
+
+# Fit prophet model
+m_reg <- prophet(df_regulation)
+
+# Create future dataframe (5 years ahead)
+future_reg <- make_future_dataframe(m_reg, periods = 5, freq = "year")
+
+# Predict with prophet
+fc_reg <- predict(m_reg, future_reg)
+
+# Calculate residuals on training data
+residuals_reg <- df_regulation$y - fc_reg$yhat[1:nrow(df_regulation)]
+
+# Fit ARIMA on residuals (use order from your best fit)
+arima_reg <- Arima(residuals_reg, order = c(2,0,0))
+
+# Forecast residuals for 5 years
+fc_arima_reg <- forecast(arima_reg, h = 5)
+
+# Add ARIMA residual forecast to prophet forecast for hybrid prediction
+hybrid_reg <- fc_reg$yhat
+hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] <- 
+  hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] + fc_arima_reg$mean
+
+
+
+
+df_block <- yearly_theme_counts %>%
+  filter(Classification == "Blockchain Technology and Innovation") %>%
+  select(Year, Count) %>%
+  rename(ds = Year, y = Count) %>%
+  mutate(ds = as.Date(paste0(ds, "-01-01")))
+
+df_crypto <- yearly_theme_counts %>%
+  filter(Classification == "Cryptocurrency and Digital Assets") %>%
+  select(Year, Count) %>%
+  rename(ds = Year, y = Count) %>%
+  mutate(ds = as.Date(paste0(ds, "-01-01")))
+
+
+
+m_block <- prophet(df_block)
+future_block <- make_future_dataframe(m_block, periods = 5, freq = "year")
+fc_block <- predict(m_block, future_block)
+
+m_crypto <- prophet(df_crypto)
+future_crypto <- make_future_dataframe(m_crypto, periods = 5, freq = "year")
+fc_crypto <- predict(m_crypto, future_crypto)
+
+
+
+
+
+library(dplyr)
+library(prophet)
+library(forecast)
+library(ggplot2)
+
+# Prepare data for Regulation theme
+df_regulation <- yearly_theme_counts %>%
+  filter(Classification == "Regulation, Governance and Legal Framework") %>%
+  select(Year, Count) %>%
+  rename(ds = Year, y = Count) %>%
+  mutate(ds = as.Date(paste0(ds, "-01-01")))
+
+# Fit prophet model for regulation
+m_reg <- prophet(df_regulation)
+future_reg <- make_future_dataframe(m_reg, periods = 5, freq = "year")
+fc_reg <- predict(m_reg, future_reg)
+
+# Residuals and ARIMA fit on residuals
+residuals_reg <- df_regulation$y - fc_reg$yhat[1:nrow(df_regulation)]
+arima_reg <- Arima(residuals_reg, order = c(2,0,0))
+fc_arima_reg <- forecast(arima_reg, h = 5)
+
+# Hybrid forecast for regulation
+hybrid_reg <- fc_reg$yhat
+hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] <- 
+  hybrid_reg[(nrow(df_regulation)+1):length(hybrid_reg)] + fc_arima_reg$mean
+
+# Prepare data for Blockchain theme
+df_block <- yearly_theme_counts %>%
+  filter(Classification == "Blockchain Technology and Innovation") %>%
+  select(Year, Count) %>%
+  rename(ds = Year, y = Count) %>%
+  mutate(ds = as.Date(paste0(ds, "-01-01")))
+
+# Prophet forecast blockchain
+m_block <- prophet(df_block)
+future_block <- make_future_dataframe(m_block, periods = 5, freq = "year")
+fc_block <- predict(m_block, future_block)
+
+# Prepare data for Crypto theme
+df_crypto <- yearly_theme_counts %>%
+  filter(Classification == "Cryptocurrency and Digital Assets") %>%
+  select(Year, Count) %>%
+  rename(ds = Year, y = Count) %>%
+  mutate(ds = as.Date(paste0(ds, "-01-01")))
+
+# Prophet forecast crypto
+m_crypto <- prophet(df_crypto)
+future_crypto <- make_future_dataframe(m_crypto, periods = 5, freq = "year")
+fc_crypto <- predict(m_crypto, future_crypto)
+
+# Create combined dataframe for plotting
+plot_df <- bind_rows(
+  data.frame(
+    ds = fc_reg$ds,
+    yhat = hybrid_reg,
+    Classification = "Regulation, Governance and Legal Framework"
+  ),
+  data.frame(
+    ds = fc_block$ds,
+    yhat = fc_block$yhat,
+    Classification = "Blockchain Technology and Innovation"
+  ),
+  data.frame(
+    ds = fc_crypto$ds,
+    yhat = fc_crypto$yhat,
+    Classification = "Cryptocurrency and Digital Assets"
+  )
+)
+
+# Plot
+ggplot(plot_df, aes(x = ds, y = yhat, color = Classification)) +
+  geom_line(size = 1) +
+  # Add labels at end of each line
+  geom_text(data = plot_df %>% group_by(Classification) %>% slice_tail(n=1),
+            aes(label = Classification), 
+            hjust = -0.1, size = 4, show.legend = FALSE) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  labs(
+    title = "Policy Theme Forecasts: Regulation Hybrid and Prophet for Blockchain & Crypto",
+    x = "Year",
+    y = "Publications Forecast"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  xlim(min(plot_df$ds), max(plot_df$ds) + 365*2) # extend x axis for labels
+
+
+
+
+library(dplyr)
+library(prophet)
+library(forecast)
+library(ggplot2)
+library(scales)  # for pretty breaks
+df_regulation$ds <- as.Date(df_regulation$ds)
+df_block$ds <- as.Date(df_block$ds)
+df_crypto$ds <- as.Date(df_crypto$ds)
+fc_reg$ds <- as.Date(fc_reg$ds)
+fc_block$ds <- as.Date(fc_block$ds)
+fc_crypto$ds <- as.Date(fc_crypto$ds)
+
+# Prepare the combined dataset with forecast flag
+plot_df <- bind_rows(
+  data.frame(
+    ds = fc_reg$ds,
+    yhat = hybrid_reg,
+    Classification = "Regulation, Governance and Legal Framework",
+    Forecast = ifelse(fc_reg$ds > max(df_regulation$ds), TRUE, FALSE)
+  ),
+  data.frame(
+    ds = fc_block$ds,
+    yhat = fc_block$yhat,
+    Classification = "Blockchain Technology and Innovation",
+    Forecast = ifelse(fc_block$ds > max(df_block$ds), TRUE, FALSE)
+  ),
+  data.frame(
+    ds = fc_crypto$ds,
+    yhat = fc_crypto$yhat,
+    Classification = "Cryptocurrency and Digital Assets",
+    Forecast = ifelse(fc_crypto$ds > max(df_crypto$ds), TRUE, FALSE)
+  )
+)
+
+# Define colors for each theme
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f77b4",   # Blue
+  "Blockchain Technology and Innovation" = "#ff7f0e",        # Orange
+  "Cryptocurrency and Digital Assets" = "#2ca02c"            # Green
+)
+
+# Add subtle shadow by plotting geom_line twice with alpha
+ggplot(plot_df, aes(x = ds, y = yhat, color = Classification, linetype = Forecast)) +
+  # Shadow lines (thicker, low alpha)
+  geom_line(size = 4, alpha = 0.1, show.legend = FALSE) +
+  # Main lines
+  geom_line(size = 1.2) +
+  # Labels inside the plot, slightly left of end point
+  geom_text(
+    data = plot_df %>% group_by(Classification) %>% filter(ds == max(ds)),
+    aes(label = Classification),
+    hjust = 1.1, vjust = 0.5, size = 4,
+    color = "black",
+    show.legend = FALSE
+  ) +
+  scale_color_manual(values = colors) +
+  scale_linetype_manual(values = c("FALSE" = "solid", "TRUE" = "dashed")) +
+  scale_x_date(
+    breaks = pretty_breaks(n = 8),
+    labels = date_format("%Y"),
+    expand = expansion(add = c(0, 365*1.5))  # padding for labels on right
+  ) +
+  labs(
+    title = "Forecast of Policy Themes Publications in Africa",
+    subtitle = "Hybrid ARIMA + Prophet for Regulation; Prophet for Blockchain & Crypto",
+    x = "Year",
+    y = "Number of Publications"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(margin = margin(b = 15)),
+    axis.title = element_text(color = "black"),
+    axis.text = element_text(color = "black")
+  )
+
+
+
+
+
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+# Prepare the combined dataset (assuming ds are Date objects)
+plot_df <- bind_rows(
+  data.frame(
+    ds = fc_reg$ds,
+    yhat = hybrid_reg,
+    Classification = "Regulation, Governance and Legal Framework",
+    Forecast = ifelse(fc_reg$ds > max(df_regulation$ds), TRUE, FALSE)
+  ),
+  data.frame(
+    ds = fc_block$ds,
+    yhat = fc_block$yhat,
+    Classification = "Blockchain Technology and Innovation",
+    Forecast = ifelse(fc_block$ds > max(df_block$ds), TRUE, FALSE)
+  ),
+  data.frame(
+    ds = fc_crypto$ds,
+    yhat = fc_crypto$yhat,
+    Classification = "Cryptocurrency and Digital Assets",
+    Forecast = ifelse(fc_crypto$ds > max(df_crypto$ds), TRUE, FALSE)
+  )
+)
+
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f77b4",   # Blue
+  "Blockchain Technology and Innovation" = "#ff7f0e",        # Orange
+  "Cryptocurrency and Digital Assets" = "#2ca02c"            # Green
+)
+
+# Define forecast start and end dates for shading
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2030-12-31")
+
+ggplot(plot_df, aes(x = ds, y = yhat, color = Classification, linetype = Forecast)) +
+  # Shaded rectangle for forecast period
+  annotate(
+    "rect",
+    xmin = forecast_start, xmax = forecast_end,
+    ymin = -Inf, ymax = Inf,
+    alpha = 0.1, fill = "grey70"
+  ) +
+  # Shadow behind lines
+  geom_line(size = 4, alpha = 0.1, show.legend = FALSE) +
+  # Main lines
+  geom_line(size = 1.2) +
+  # Labels positioned just after last data point, matching line color, smaller font
+  label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup()
+
+geom_text(
+  data = label_data,
+  aes(label = Classification, x = ds, y = yhat),
+  color = colors[label_data$Classification],
+  hjust = 0,
+  vjust = 0.5,
+  size = 3.5,
+  nudge_x = 90,
+  show.legend = FALSE
+)
++
+  scale_color_manual(values = colors) +
+  scale_linetype_manual(values = c("FALSE" = "solid", "TRUE" = "dashed")) +
+  scale_x_date(
+    breaks = pretty_breaks(n = 8),
+    labels = date_format("%Y"),
+    expand = expansion(mult = c(0.05, 0.25))  # extra space on right for labels
+  ) +
+  labs(
+    title = "Forecast of Policy Themes Publications in Africa",
+    subtitle = "Hybrid ARIMA + Prophet for Regulation; Prophet for Blockchain & Crypto",
+    x = "Year",
+    y = "Number of Publications"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(margin = margin(b = 15)),
+    axis.title = element_text(color = "black"),
+    axis.text = element_text(color = "black"),
+    panel.grid.minor = element_blank()
+  )
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# Extract latest date per classification for label placement
+label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup()
+
+# Date range for forecast shading (adjust these to your actual dates)
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2030-12-31")
+
+ggplot(plot_df, aes(x = ds, y = yhat, group = interaction(Classification, Model))) +
+  # Shaded forecast background
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "gray90", alpha = 0.4) +
+  # Historical data solid lines
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(color = Classification),
+            size = 1) +
+  # Forecast data dashed lines
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(color = Classification),
+            linetype = "dashed",
+            size = 1) +
+  # Labels after last data point, colored by Classification
+  geom_text(data = label_data,
+            aes(x = ds, y = yhat, label = Classification),
+            color = colors[label_data$Classification],
+            hjust = 0, vjust = 0.5,
+            size = 3,
+            nudge_x = 80,
+            show.legend = FALSE) +
+  # Scale colors with your vector
+  scale_color_manual(values = colors) +
+  # Axis labels and title
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications",
+    color = NULL  # removes legend title
+  ) +
+  # X-axis yearly breaks, no angle for labels
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  # Theme tweaks for clean look
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  # Expand x limits so labels fit
+  coord_cartesian(clip = 'off')  
+
+ggplot(plot_df, aes(x = ds, y = yhat, group = Classification)) +
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "gray90", alpha = 0.4) +
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(color = Classification),
+            size = 1) +
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(color = Classification),
+            linetype = "dashed",
+            size = 1) +
+  geom_text(data = label_data,
+            aes(x = ds, y = yhat, label = Classification),
+            color = colors[label_data$Classification],
+            hjust = 0, vjust = 0.5,
+            size = 3,
+            nudge_x = 80,
+            show.legend = FALSE) +
+  scale_color_manual(values = colors) +
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications",
+    color = NULL
+  ) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  coord_cartesian(clip = 'off')
+
+
+
+scale_x_date(
+  date_breaks = "1 year", 
+  date_labels = "%Y",
+  expand = expansion(mult = c(0.02, 0.15))  # more space on the right (15%)
+)
+
+
+
+geom_text(
+  data = label_data,
+  aes(x = ds, y = yhat, label = Classification),
+  color = colors[label_data$Classification],
+  hjust = 0, vjust = 0.5,
+  size = 3,
+  nudge_x = 50,  # push label to the right by ~50 days
+  show.legend = FALSE
+)
+
+
+ggplot(plot_df, aes(x = ds, y = yhat, group = Classification)) +
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "gray90", alpha = 0.4) +
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(color = Classification),
+            size = 1) +
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(color = Classification),
+            linetype = "dashed",
+            size = 1) +
+  geom_text(data = label_data,
+            aes(x = ds, y = yhat, label = Classification),
+            color = colors[label_data$Classification],
+            hjust = 0, vjust = 0.5,
+            size = 3,
+            nudge_x = 50,
+            show.legend = FALSE) +
+  scale_color_manual(values = colors) +
+  scale_x_date(
+    date_breaks = "1 year", 
+    date_labels = "%Y",
+    expand = expansion(mult = c(0.02, 0.15))  # space on right for labels
+  ) +
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications",
+    color = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  coord_cartesian(clip = 'off')
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Assume plot_df contains your forecast data with columns:
+# ds (date), yhat (forecast), Classification, Model
+# forecast_start and forecast_end are Date objects for 2026-01-01 and 2030-12-31
+
+# Filter out dates beyond 2030
+plot_df <- plot_df %>% filter(year(ds) <= 2030)
+
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2030-12-31")
+
+# Define colors (adjust to your palette)
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f78b4",
+  "Blockchain Technology and Innovation" = "#ffd33d",
+  "Cryptocurrency and Digital Assets" = "#fdae61"
+)
+
+# Create labels dataframe with adjusted label text (two lines for regulation)
+label_data <- plot_df %>%
+  filter(ds == max(ds)) %>%
+  mutate(
+    Label = case_when(
+      Classification == "Regulation, Governance and Legal Framework" ~ "Regulation, Law &\nGovernance",
+      TRUE ~ Classification
+    )
+  )
+
+ggplot(plot_df, aes(x = ds, y = yhat, group = Classification, color = Classification)) +
+  # Background shadow for forecast period
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "gray90", alpha = 0.3) +
+  
+  # Actual data solid lines
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            size = 1) +
+  
+  # Forecast data dashed lines
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            linetype = "dashed",
+            size = 1) +
+  
+  # Labels after last point, nudged right and split line for regulation label
+  geom_text(data = label_data,
+            aes(x = ds, y = yhat, label = Label),
+            hjust = 0, vjust = 0.5,
+            size = 3.5,
+            color = colors[label_data$Classification],
+            nudge_x = 50,
+            lineheight = 0.9,
+            show.legend = FALSE) +
+  
+  # Manual colors
+  scale_color_manual(values = colors) +
+  
+  # X axis: expand right for labels, format year, no clipping of labels
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y",
+    expand = expansion(mult = c(0.02, 0.20))
+  ) +
+  
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  
+  coord_cartesian(clip = "off")  # allow labels outside plot area
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Example label texts split into two lines for all themes
+label_texts <- c(
+  "Regulation, Governance and Legal Framework" = "Regulation, Law &\nGovernance",
+  "Blockchain Technology and Innovation" = "Blockchain\nTechnology",
+  "Cryptocurrency and Digital Assets" = "Crypto &\nDigital Assets"
+)
+
+# Filter to exclude 2031+
+plot_df <- plot_df %>% filter(year(ds) <= 2030)
+
+# Define colors for themes
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f78b4",
+  "Blockchain Technology and Innovation" = "#ffd33d",
+  "Cryptocurrency and Digital Assets" = "#fdae61"
+)
+
+# Create labels dataframe: last date point per theme, with split labels
+label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup() %>%
+  mutate(Label = label_texts[Classification])
+
+ggplot(plot_df, aes(x = ds, y = yhat, group = Classification, color = Classification)) +
+  
+  # Solid lines for actual data (before forecast period)
+  geom_line(data = filter(plot_df, ds < as.Date("2026-01-01")),
+            size = 1) +
+  
+  # Dashed lines for forecast period (2026-2030)
+  geom_line(data = filter(plot_df, ds >= as.Date("2026-01-01")),
+            linetype = "dashed",
+            size = 1) +
+  
+  # Labels after last points, nudged right, white background rectangles behind text
+  geom_label(data = label_data,
+             aes(x = ds, y = yhat, label = Label),
+             hjust = 0, vjust = 0.5,
+             size = 3.5,
+             color = colors[label_data$Classification],
+             fill = "white",
+             label.size = 0,  # no border
+             nudge_x = 50,
+             lineheight = 0.9,
+             show.legend = FALSE) +
+  
+  # Manual colors matching themes
+  scale_color_manual(values = colors) +
+  
+  # X axis: expand right for label space, formatted years, no clipping
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y",
+    expand = expansion(mult = c(0.02, 0.20))
+  ) +
+  
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  
+  coord_cartesian(clip = "off")  # allow labels outside plot area
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Assuming plot_df contains: ds (Date), yhat (forecast+actual), Classification (theme), Model (Prophet/Hybrid etc)
+# Filter out years > 2030
+plot_df <- plot_df %>% filter(year(ds) <= 2030)
+
+# Colors: regulation blue, blockchain teal, crypto orange (more distinct)
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f78b4", # blue
+  "Blockchain Technology and Innovation" = "#238b45",      # dark green/teal
+  "Cryptocurrency and Digital Assets" = "#e6550d"          # orange
+)
+
+# Two-line label text per theme
+label_texts <- c(
+  "Regulation, Governance and Legal Framework" = "Regulation, Law &\nGovernance",
+  "Blockchain Technology and Innovation" = "Blockchain\nTechnology",
+  "Cryptocurrency and Digital Assets" = "Crypto &\nDigital Assets"
+)
+
+# Last data point per theme for placing labels
+label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup() %>%
+  mutate(Label = label_texts[Classification])
+
+# Create forecast period start and end dates for the shadow
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2030-12-31")
+
+ggplot() +
+  
+  # Shadow background for forecast period
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "grey90", alpha = 0.3) +
+  
+  # Actual data lines (solid)
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1) +
+  
+  # Forecast data lines (dashed)
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1, linetype = "dashed") +
+  
+  # Labels at end of lines with white background, two lines text
+  geom_label(data = label_data,
+             aes(x = ds, y = yhat, label = Label, color = Classification),
+             hjust = 0, vjust = 0.5,
+             size = 3.5,
+             fill = "white",
+             label.size = 0,
+             nudge_x = 40,
+             lineheight = 0.9,
+             show.legend = FALSE) +
+  
+  scale_color_manual(values = colors) +
+  
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y",
+    expand = expansion(mult = c(0.02, 0.20))
+  ) +
+  
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  
+  coord_cartesian(clip = "off")  # allow labels outside plot area
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Filter plot_df to years <= 2030
+plot_df <- plot_df %>% filter(year(ds) <= 2030)
+
+# Colors same as before
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f78b4",
+  "Blockchain Technology and Innovation" = "#238b45",
+  "Cryptocurrency and Digital Assets" = "#e6550d"
+)
+
+# Two-line labels
+label_texts <- c(
+  "Regulation, Governance and Legal Framework" = "Regulation, Law &\nGovernance",
+  "Blockchain Technology and Innovation" = "Blockchain\nTechnology",
+  "Cryptocurrency and Digital Assets" = "Crypto &\nDigital Assets"
+)
+
+label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup() %>%
+  mutate(Label = label_texts[Classification])
+
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2030-12-31")
+
+ggplot() +
+  # Shadow only for forecast period 2026-2030
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "grey90", alpha = 0.3) +
+  
+  # Actual solid lines (before 2026)
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1) +
+  
+  # Forecast dashed lines (2026–2030)
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1, linetype = "dashed") +
+  
+  # Labels
+  geom_label(data = label_data,
+             aes(x = ds, y = yhat, label = Label, color = Classification),
+             hjust = 0, vjust = 0.5,
+             size = 3.5,
+             fill = "white",
+             label.size = 0,
+             nudge_x = 40,
+             lineheight = 0.9,
+             show.legend = FALSE) +
+  
+  scale_color_manual(values = colors) +
+  
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y",
+    limits = c(min(plot_df$ds), forecast_end),
+    expand = c(0, 0)
+  ) +
+  
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  
+  coord_cartesian(clip = "off")
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Filter plot_df to years <= 2030 (data limit)
+plot_df <- plot_df %>% filter(year(ds) <= 2030)
+
+# Colors for lines
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f78b4",
+  "Blockchain Technology and Innovation" = "#238b45",
+  "Cryptocurrency and Digital Assets" = "#e6550d"
+)
+
+# Two-line labels for legend
+label_texts <- c(
+  "Regulation, Governance and Legal Framework" = "Regulation, Law &\nGovernance",
+  "Blockchain Technology and Innovation" = "Blockchain\nTechnology",
+  "Cryptocurrency and Digital Assets" = "Crypto &\nDigital Assets"
+)
+
+label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup() %>%
+  mutate(Label = label_texts[Classification])
+
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2029-12-31")  # Changed end date to 2029-12-31
+
+# Expand x-axis limit slightly beyond 2030 to give space for labels
+x_axis_max <- as.Date("2030-09-30")
+
+ggplot() +
+  # Shadow only for forecast period 2026-2029
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "grey90", alpha = 0.3) +
+  
+  # Actual solid lines (before 2026)
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1) +
+  
+  # Forecast dashed lines (2026–2030)
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1, linetype = "dashed") +
+  
+  # Labels - nudged right, with white background, two-line text
+  geom_label(data = label_data,
+             aes(x = ds, y = yhat, label = Label, color = Classification),
+             hjust = 0, vjust = 0.5,
+             size = 3.5,
+             fill = "white",
+             label.size = 0,
+             nudge_x = -100,    # pushed further right
+             lineheight = 0.9,
+             show.legend = FALSE) +
+  
+  scale_color_manual(values = colors) +
+  
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y",
+    limits = c(min(plot_df$ds), x_axis_max),  # expanded limit for label room
+    expand = c(0, 0)
+  ) +
+  
+  labs(
+    title = "Regulation, Law, and Compliance Lead Policy Themes in Africa",
+    x = "Year",
+    y = "Publications"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  ) +
+  
+  coord_cartesian(clip = "off")
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+# Filter plot_df to years <= 2030 (data limit)
+plot_df <- plot_df %>% filter(year(ds) <= 2030)
+
+# Colors for lines
+colors <- c(
+  "Regulation, Governance and Legal Framework" = "#1f78b4",
+  "Blockchain Technology and Innovation" = "#238b45",
+  "Cryptocurrency and Digital Assets" = "#e6550d"
+)
+
+# Two-line labels for legend
+label_texts <- c(
+  "Regulation, Governance and Legal Framework" = "Regulation, Law &\nGovernance",
+  "Blockchain Technology and Innovation" = "Blockchain\nTechnology",
+  "Cryptocurrency and Digital Assets" = "Crypto &\nDigital Assets"
+)
+
+label_data <- plot_df %>%
+  group_by(Classification) %>%
+  filter(ds == max(ds)) %>%
+  ungroup() %>%
+  mutate(Label = label_texts[Classification])
+
+forecast_start <- as.Date("2026-01-01")
+forecast_end <- as.Date("2029-12-31")  # Forecast shading end date
+
+# Expand x-axis limit slightly beyond 2030 to give space for labels
+x_axis_max <- as.Date("2030-12-31")
+
+ggplot() +
+  # Shadow only for forecast period 2026-2029
+  annotate("rect",
+           xmin = forecast_start, xmax = forecast_end,
+           ymin = -Inf, ymax = Inf,
+           fill = "grey90", alpha = 0.3) +
+  
+  # Actual solid lines (before 2026)
+  geom_line(data = filter(plot_df, ds < forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1) +
+  
+  # Forecast dashed lines (2026–2030)
+  geom_line(data = filter(plot_df, ds >= forecast_start),
+            aes(x = ds, y = yhat, color = Classification),
+            size = 1, linetype = "dashed") +
+  
+  # Labels - nudged right, with white background, two-line text
+  geom_label(data = label_data,
+             aes(x = ds, y = yhat, label = Label, color = Classification),
+             hjust = 0, vjust = 0.5,
+             size = 3.5,
+             fill = "white",
+             label.size = 0,
+             nudge_x = 100,    # positive nudging right
+             lineheight = 0.9,
+             show.legend = FALSE) +
+  
+  scale_color_manual(values = colors) +
+  
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y",
+    limits = c(min(plot_df$ds), x_axis_max),
+    expand = c(0, 0)
+  ) +
+  
+  labs(
+    title = "Regulation & Compliance Dominate Blockchain Policy in Africa",
+    x = "Year",
+    y = "Policy"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    axis.title = element_text(color = "black"),
+    plot.title = element_text(hjust=0.5,face = "bold", size = 14),
+    legend.position = "none",
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(10, 120, 10, 10)  # Add space on right for labels
+  ) +
+  
+  coord_cartesian(clip = "off")
+
+
+
+
+
+
+
+library(dplyr)
+library(lubridate)
+
+# Filter to top three themes
+top3_themes <- c("Regulation, Governance and Legal Framework",
+                 "Blockchain Technology and Innovation",
+                 "Cryptocurrency and Digital Assets")
+
+df_top3 <- plot_df %>% filter(Classification %in% top3_themes)
+
+# Ensure the data is up to 2030 only (historical + forecast)
+df_top3 <- df_top3 %>% filter(year(ds) <= 2030)
+
+# Convert to Year numeric for clarity
+df_top3 <- df_top3 %>% mutate(Year = year(ds)) %>% select(Year, Classification, yhat)
+
+# Arrange nicely
+df_top3 <- df_top3 %>% arrange(Classification, Year)
+
+print(df_top3)
+
+
+
+
+
+library(dplyr)
+
+# Example datasets (replace with your real data)
+# historical_data <- data.frame(Year=..., Classification=..., Count=...)
+# forecast_data <- data.frame(Year=..., Classification=..., Forecast=...)
+
+# Filter to top 3 themes
+top3_themes <- c("Regulation, Governance and Legal Framework",
+                 "Blockchain Technology and Innovation",
+                 "Cryptocurrency and Digital Assets")
+
+historical_top3 <- historical_data %>%
+  filter(Classification %in% top3_themes)
+
+forecast_top3 <- forecast_data %>%
+  filter(Classification %in% top3_themes)
+
+# Combine historical and forecast
+combined_df <- historical_top3 %>%
+  select(Year, Classification, Count) %>%
+  rename(Value = Count) %>%
+  bind_rows(
+    forecast_top3 %>%
+      rename(Value = Forecast)
+  ) %>%
+  arrange(Classification, Year)
+
+print(combined_df)
+
+
+
+
+
+
+
+library(dplyr)
+
+# Example (replace with your real data frames)
+historical_data <- yearly_theme_counts %>% 
+  filter(Classification %in% c(
+    "Regulation, Governance and Legal Framework",
+    "Blockchain Technology and Innovation",
+    "Cryptocurrency and Digital Assets"
+  ))
+
+forecast_data <- forecast_list %>% 
+  filter(Classification %in% c(
+    "Regulation, Governance and Legal Framework",
+    "Blockchain Technology and Innovation",
+    "Cryptocurrency and Digital Assets"
+  ))
+
+# Combine historical and forecast data into one table
+combined_df <- historical_data %>%
+  select(Year, Classification, Count) %>%
+  rename(Value = Count) %>%
+  bind_rows(
+    forecast_data %>% 
+      select(Year, Classification, Forecast) %>% 
+      rename(Value = Forecast)
+  ) %>%
+  arrange(Classification, Year)
+
+print(combined_df)
+names(forecast_list) 
+# e.g. "Blockchain Technology and Innovation", "Cryptocurrency and Digital Assets", ...
+
+
+library(dplyr)
+library(purrr)
+
+# Extract all forecast data frames from list elements and bind rows
+all_forecasts <- map_df(forecast_list, function(x) x$forecasts)
+
+# Now filter only the top 3 themes
+forecast_data <- all_forecasts %>%
+  filter(Classification %in% c(
+    "Regulation, Governance and Legal Framework",
+    "Blockchain Technology and Innovation",
+    "Cryptocurrency and Digital Assets"
+  ))
+
+# Historical data filter
+historical_data <- yearly_theme_counts %>%
+  filter(Classification %in% c(
+    "Regulation, Governance and Legal Framework",
+    "Blockchain Technology and Innovation",
+    "Cryptocurrency and Digital Assets"
+  ))
+
+# Combine historical and forecast data, unify column names
+combined_df <- historical_data %>%
+  select(Year, Classification, Count) %>%
+  rename(Value = Count) %>%
+  bind_rows(
+    forecast_data %>%
+      select(Year, Classification, Forecast) %>%
+      rename(Value = Forecast)
+  ) %>%
+  arrange(Classification, Year)
+
+print(combined_df)
+
+head(all_forecasts)
+str(all_forecasts)
+colnames(all_forecasts)
